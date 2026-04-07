@@ -1,0 +1,607 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Bold.org Dashboard Redesign — Case Study</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap');
+
+  *{box-sizing:border-box;margin:0;padding:0}
+  :root{
+    --bold-blue:#1a56db;
+    --bold-blue-light:#e8f0fe;
+    --bold-dark:#0d1b3e;
+    --bold-mid:#1e3a6e;
+    --bold-accent:#f59e0b;
+    --bold-green:#10b981;
+    --bold-red:#ef4444;
+    --text:#1f2937;
+    --muted:#6b7280;
+    --border:#e5e7eb;
+    --bg:#f9fafb;
+    --white:#fff;
+  }
+
+  html{scroll-behavior:smooth}
+  body{font-family:'Inter',sans-serif;color:var(--text);background:var(--bg);line-height:1.6}
+
+  /* NAV */
+  nav{
+    position:fixed;top:0;left:0;right:0;z-index:999;
+    background:var(--bold-dark);
+    display:flex;align-items:center;justify-content:space-between;
+    padding:12px 28px;
+    box-shadow:0 2px 12px rgba(0,0,0,.3);
+  }
+  .nav-logo{display:flex;align-items:center;gap:10px}
+  .nav-logo-mark{
+    width:32px;height:32px;border-radius:8px;
+    background:var(--bold-blue);
+    display:flex;align-items:center;justify-content:center;
+    font-weight:900;color:#fff;font-size:16px;letter-spacing:-1px;
+  }
+  .nav-title{color:#fff;font-weight:700;font-size:15px}
+  .nav-subtitle{color:#93c5fd;font-size:11px;font-weight:500;margin-top:1px}
+  .nav-pills{display:flex;gap:6px;flex-wrap:wrap}
+  .nav-pill{
+    padding:5px 12px;border-radius:20px;font-size:11px;font-weight:600;cursor:pointer;
+    border:none;transition:.2s;text-decoration:none;
+    background:rgba(255,255,255,.1);color:#fff;
+  }
+  .nav-pill:hover{background:var(--bold-blue);color:#fff}
+
+  /* SLIDES */
+  .slide{
+    min-height:100vh;padding:96px 40px 60px;
+    display:flex;flex-direction:column;justify-content:center;
+    max-width:1100px;margin:0 auto;
+  }
+
+  /* HERO */
+  .hero{
+    background:linear-gradient(135deg,#1B0B4F 0%,#2A147A 60%,#3d1fa3 100%);
+    min-height:100vh;display:flex;flex-direction:column;
+    justify-content:center;align-items:flex-start;
+    padding:100px 60px 60px;position:relative;overflow:hidden;
+  }
+  .hero::before{
+    content:'';position:absolute;top:-80px;right:-80px;
+    width:500px;height:500px;border-radius:50%;
+    background:radial-gradient(circle,rgba(26,86,219,.25) 0%,transparent 70%);
+  }
+  .hero-badge{
+    display:inline-flex;align-items:center;gap:6px;
+    background:rgba(255,255,255,.15);border:1px solid rgba(255,255,255,.3);
+    color:#e2d9ff;padding:6px 14px;border-radius:20px;font-size:12px;font-weight:600;
+    margin-bottom:24px;
+  }
+  .hero h1{font-size:clamp(32px,5vw,58px);font-weight:900;color:#fff;line-height:1.1;margin-bottom:16px}
+  .hero h1 span{color:#c4b5fd;background:linear-gradient(90deg,#c4b5fd,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+  .hero-sub{color:#ddd6fe;font-size:18px;max-width:560px;margin-bottom:32px;font-weight:400}
+  .hero-meta{display:flex;gap:12px;flex-wrap:wrap}
+  .hero-chip{
+    display:flex;align-items:center;gap:8px;
+    background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);
+    color:#ede9fe;padding:8px 16px;border-radius:10px;font-size:13px;font-weight:500;
+  }
+
+  /* SECTION HEADERS */
+  .section-eyebrow{font-size:11px;font-weight:700;letter-spacing:2px;text-transform:uppercase;color:var(--bold-blue);margin-bottom:10px}
+  .section-title{font-size:clamp(22px,3.5vw,36px);font-weight:800;color:var(--bold-dark);margin-bottom:8px;line-height:1.2}
+  .section-desc{color:var(--muted);font-size:15px;max-width:640px;margin-bottom:36px}
+  .divider{height:4px;width:48px;background:var(--bold-blue);border-radius:2px;margin-bottom:20px}
+
+  /* CARDS */
+  .card{background:var(--white);border:1px solid var(--border);border-radius:16px;padding:24px;box-shadow:0 1px 6px rgba(0,0,0,.06)}
+  .card-grid{display:grid;gap:16px}
+  .card-grid-2{grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+  .card-grid-3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+
+  /* ISSUE / SOLUTION CARDS */
+  .issue-card{border-left:4px solid var(--bold-red)}
+  .issue-card h3{font-size:15px;font-weight:700;color:var(--bold-dark);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .issue-card p,.issue-card ul{font-size:13px;color:var(--muted);line-height:1.6}
+  .issue-card ul{padding-left:16px;margin-top:6px}
+  .issue-card ul li{margin-bottom:4px}
+  .badge-red{display:inline-block;background:#fee2e2;color:var(--bold-red);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px}
+  .sol-card{border-left:4px solid var(--bold-green)}
+  .sol-card h3{font-size:15px;font-weight:700;color:var(--bold-dark);margin-bottom:8px;display:flex;align-items:center;gap:8px}
+  .badge-green{display:inline-block;background:#d1fae5;color:var(--bold-green);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px}
+  .badge-blue{display:inline-block;background:var(--bold-blue-light);color:var(--bold-blue);font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;letter-spacing:.5px}
+
+  /* PHONE FRAMES */
+  .phone-wrap{display:flex;justify-content:flex-start;gap:24px;flex-wrap:nowrap;overflow-x:auto;margin:32px 0 8px;align-items:flex-start;padding-bottom:8px}
+  .phone-unit{display:flex;flex-direction:column;align-items:center;gap:10px;flex:0 0 auto}
+  .phone-label{font-size:13px;font-weight:700;color:var(--bold-dark)}
+  .phone-tag{display:inline-block;font-size:10px;font-weight:700;padding:3px 12px;border-radius:20px}
+  .tag-before{background:#fee2e2;color:var(--bold-red)}
+  .tag-after{background:#d1fae5;color:var(--bold-green)}
+  .tag-state{background:var(--bold-blue-light);color:var(--bold-blue)}
+
+  .phone-img-wrap{
+    width:180px;
+    border-radius:28px;
+    border:2px solid #d1d5db;
+    overflow:hidden;
+    background:#f3f4f6;
+    aspect-ratio:9/19.5;
+    display:flex;align-items:center;justify-content:center;
+    position:relative;
+  }
+  .phone-img-wrap img{width:100%;height:100%;object-fit:cover;object-position:top;display:block}
+  .phone-placeholder{
+    display:flex;flex-direction:column;align-items:center;justify-content:center;
+    gap:8px;width:100%;height:100%;padding:1rem;text-align:center;
+  }
+  .ph-icon{width:36px;height:36px;border-radius:50%;border:1.5px dashed #d1d5db;display:flex;align-items:center;justify-content:center}
+  .ph-text{font-size:9px;color:#9ca3af;line-height:1.5;font-weight:500}
+  .ph-id{font-size:8px;color:#9ca3af;font-family:monospace;background:#e5e7eb;padding:2px 7px;border-radius:3px}
+
+  /* BEHAVIOR ROW */
+  .behavior-row{display:flex;flex-direction:column;gap:12px}
+  .beh-item{display:flex;align-items:flex-start;gap:14px;background:var(--white);border:1px solid var(--border);border-radius:12px;padding:16px}
+  .beh-icon{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:18px}
+  .beh-icon.blue{background:var(--bold-blue-light)}
+  .beh-icon.green{background:#d1fae5}
+  .beh-icon.amber{background:#fef3c7}
+  .beh-icon.purple{background:#ede9fe}
+  .beh-title{font-size:14px;font-weight:700;color:var(--bold-dark);margin-bottom:3px}
+  .beh-desc{font-size:13px;color:var(--muted)}
+
+  /* METRICS */
+  .metric-card{text-align:center;padding:28px 20px;background:var(--white);border:1px solid var(--border);border-radius:16px}
+  .metric-num{font-size:36px;font-weight:900;color:var(--bold-blue);line-height:1}
+  .metric-label{font-size:13px;color:var(--muted);margin-top:6px;font-weight:500}
+  .metric-trend{font-size:11px;color:var(--bold-green);font-weight:600;margin-top:4px}
+
+  /* TABLE */
+  table{width:100%;border-collapse:collapse;font-size:13px}
+  th{background:var(--bold-dark);color:#fff;padding:12px 16px;text-align:left;font-weight:600}
+  th:first-child{border-radius:10px 0 0 0}
+  th:last-child{border-radius:0 10px 0 0}
+  td{padding:12px 16px;border-bottom:1px solid var(--border)}
+  tr:last-child td{border-bottom:none}
+  tr:nth-child(even) td{background:#f9fafb}
+  .pill{display:inline-block;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700}
+  .pill-blue{background:var(--bold-blue-light);color:var(--bold-blue)}
+  .pill-amber{background:#fef3c7;color:#92400e}
+
+  /* QUOTE */
+  .quote-block{
+    background:linear-gradient(135deg,#f0f4ff,#fff);
+    border:1px solid #c7d7fd;border-left:4px solid var(--bold-blue);
+    border-radius:12px;padding:20px 24px;font-size:15px;color:var(--bold-dark);
+    font-style:italic;line-height:1.7;
+  }
+  .quote-block cite{display:block;font-style:normal;font-size:12px;font-weight:600;color:var(--bold-blue);margin-top:10px}
+
+  /* FIGMA STATE BUTTONS */
+  .proto-state-btn{
+    display:inline-flex;align-items:center;gap:8px;
+    background:var(--white);border:1.5px solid var(--bold-blue);
+    color:var(--bold-blue);padding:10px 18px;border-radius:10px;
+    font-size:13px;font-weight:700;text-decoration:none;
+    transition:.2s;white-space:nowrap;
+  }
+  .proto-state-btn:hover{background:var(--bold-blue);color:#fff}
+  .proto-state-btn svg{flex-shrink:0}
+
+  /* PROTO BANNER */
+  .proto-banner{
+    background:linear-gradient(135deg,var(--bold-blue) 0%,#1e40af 100%);
+    border-radius:20px;padding:32px 36px;
+    display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;
+  }
+  .proto-text h3{font-size:20px;font-weight:800;color:#fff;margin-bottom:6px}
+  .proto-text p{font-size:14px;color:#93c5fd}
+  .proto-btn{
+    display:inline-flex;align-items:center;gap:8px;
+    background:#fff;color:var(--bold-blue);
+    padding:12px 24px;border-radius:10px;font-weight:700;font-size:14px;
+    text-decoration:none;transition:.2s;white-space:nowrap;
+  }
+  .proto-btn:hover{background:#f0f4ff}
+
+  /* FOOTER */
+  .footer{background:var(--bold-dark);color:#93c5fd;text-align:center;padding:32px;font-size:13px}
+  .footer b{color:#fff}
+
+  section{scroll-margin-top:60px}
+
+  @media(max-width:640px){
+    .hero{padding:90px 24px 48px}
+    .slide{padding:80px 20px 48px}
+    nav{padding:10px 16px}
+    .nav-pills{display:none}
+    .phone-wrap{gap:16px}
+    .phone-img-wrap{width:140px}
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">
+    <div class="nav-logo-mark">B</div>
+    <div>
+      <div class="nav-title">Bold.org</div>
+      <div class="nav-subtitle">Dashboard Redesign · Case Study</div>
+    </div>
+  </div>
+  <div class="nav-pills">
+    <a class="nav-pill" href="#diagnosis">Diagnosis</a>
+    <a class="nav-pill" href="#redesign">Redesign</a>
+    <a class="nav-pill" href="#rationale">Rationale</a>
+    <a class="nav-pill" href="#metrics">Metrics</a>
+    <a class="nav-pill" href="#experiment">Experiment</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section id="hero">
+<div class="hero">
+  <div class="hero-badge">
+    <svg width="12" height="12" viewBox="0 0 12 12" fill="none"><circle cx="6" cy="6" r="6" fill="#60a5fa"/></svg>
+    UX Case Study · Mobile-First · April 2026
+  </div>
+  <h1>Redesigning the<br><span>Bold.org Student Dashboard</span></h1>
+  <p class="hero-sub">A diagnosis and mobile-first redesign of the Bold.org student home experience — focused on improving activation, reward legibility, and day-7+ retention across four key user states.</p>
+  <div class="hero-meta">
+    <div class="hero-chip">📱 Mobile-first</div>
+    <div class="hero-chip">🎯 Activation & Retention</div>
+    <div class="hero-chip">💰 Revenue-aligned UX</div>
+    <div class="hero-chip">⚡ 4 Key States</div>
+  </div>
+</div>
+</section>
+
+<!-- DIAGNOSIS -->
+<section id="diagnosis">
+<div class="slide">
+  <div class="section-eyebrow">01 — Diagnosis</div>
+  <div class="divider"></div>
+  <h2 class="section-title">What's Broken on the Dashboard</h2>
+  <p class="section-desc">The dashboard today functions as a portal to scholarships and partner offers. It should function as a funding cockpit — showing students exactly how much money is flowing toward them and what to do next.</p>
+
+  <div class="card-grid card-grid-2">
+    <div class="card issue-card">
+      <h3><span class="badge-red">RETENTION</span> Users Don't Come Back</h3>
+      <p>The vast majority submit a few no-essay applications during onboarding and never return. The failure is the transition from signup-driven to self-directed engagement. After 30 days with no return, users are essentially lost.</p>
+    </div>
+    <div class="card issue-card">
+      <h3><span class="badge-red">VALUE</span> Points Feel Like Nothing</h3>
+      <p>The dashboard shows "0 Bold Points" with no context on what they're worth. The 3,000 BP threshold feels impossibly far for a new user. The connection between "earn points" and "pay off debt" is never made visceral or immediate.</p>
+    </div>
+    <div class="card issue-card">
+      <h3><span class="badge-red">CLARITY</span> 329 Matches Is Overwhelming</h3>
+      <p>"329 Scholarships Matched to You" is a firehose, not a recommendation. There's no signal of fit, win probability, or where to start — so most users don't start at all.</p>
+    </div>
+    <div class="card issue-card">
+      <h3><span class="badge-red">TRUST</span> Partners Feel Like Ads</h3>
+      <p>The "Vetted Partner Program" disclosure frames offers as advertising. Students don't understand that completing partner offers is how they earn toward real loan payments.</p>
+    </div>
+    <div class="card issue-card">
+      <h3><span class="badge-red">MOBILE</span> 30–50% More Revenue Left on Table</h3>
+      <p>Mobile generates significantly more revenue per session, but there's no prominent app download CTA on the web dashboard. Push notifications — the best re-engagement channel — require app installation.</p>
+    </div>
+    <div class="card issue-card">
+      <h3><span class="badge-red">DIRECTION</span> No Clear Next Action</h3>
+      <p>After landing, the user must self-direct. There's no opinionated "here's what to do right now" layer — no weekly structure, no personalized nudge, no momentum signal to drive a second session.</p>
+    </div>
+  </div>
+
+  <div class="quote-block" style="margin-top:28px">
+    Every element on the dashboard should answer one question: "What should I do right now to get closer to paying off my student debt?"
+    <cite>— Bold.org Revenue & Dashboard Strategy Guide</cite>
+  </div>
+</div>
+</section>
+
+<!-- REDESIGN -->
+<section id="redesign">
+<div class="slide">
+  <div class="section-eyebrow">02 — Redesign</div>
+  <div class="divider"></div>
+  <h2 class="section-title">Four Key States</h2>
+  <p class="section-desc">Each state adapts the hero card, weekly goals, and scholarship surface to match where the user is in their journey. The dashboard evolves with them.</p>
+
+  <div class="phone-wrap" id="phone-wrap">
+
+    <div class="phone-unit">
+      <div class="phone-img-wrap">
+        <img id="img-before" src="" alt="Current dashboard" style="display:none;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="phone-placeholder">
+          <div class="ph-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+          <div class="ph-text">Current dashboard screenshot</div>
+          <div class="ph-id">img-before</div>
+        </div>
+      </div>
+      <div class="phone-label">Current dashboard</div>
+      <span class="phone-tag tag-before">BEFORE</span>
+    </div>
+
+    <div class="phone-unit">
+      <div class="phone-img-wrap">
+        <img id="img-new" src="" alt="New user state" style="display:none;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="phone-placeholder">
+          <div class="ph-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+          <div class="ph-text">New user redesign</div>
+          <div class="ph-id">img-new</div>
+        </div>
+      </div>
+      <div class="phone-label">New user</div>
+      <span class="phone-tag tag-after">AFTER</span>
+    </div>
+
+    <div class="phone-unit">
+      <div class="phone-img-wrap">
+        <img id="img-milestone" src="" alt="Milestone state" style="display:none;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="phone-placeholder">
+          <div class="ph-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+          <div class="ph-text">Milestone / celebratory state</div>
+          <div class="ph-id">img-milestone</div>
+        </div>
+      </div>
+      <div class="phone-label">Milestone achieved</div>
+      <span class="phone-tag tag-state">STATE</span>
+    </div>
+
+    <div class="phone-unit">
+      <div class="phone-img-wrap">
+        <img id="img-partial" src="" alt="Partially engaged" style="display:none;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="phone-placeholder">
+          <div class="ph-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+          <div class="ph-text">Partially engaged user</div>
+          <div class="ph-id">img-partial</div>
+        </div>
+      </div>
+      <div class="phone-label">Partially engaged</div>
+      <span class="phone-tag tag-state">STATE</span>
+    </div>
+
+    <div class="phone-unit">
+      <div class="phone-img-wrap">
+        <img id="img-returning" src="" alt="Returning user" style="display:none;" onerror="this.style.display='none';this.nextElementSibling.style.display='flex';">
+        <div class="phone-placeholder">
+          <div class="ph-icon"><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#9ca3af" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg></div>
+          <div class="ph-text">Returning user</div>
+          <div class="ph-id">img-returning</div>
+        </div>
+      </div>
+      <div class="phone-label">Returning user</div>
+      <span class="phone-tag tag-state">STATE</span>
+    </div>
+
+  </div>
+
+  <!-- FIGMA PROTOTYPE LINKS -->
+  <div style="margin-top:32px;display:flex;gap:12px;flex-wrap:wrap">
+    <a href="https://www.figma.com/proto/vpbiW66r3rOmjbnznwpsta/Bold.org-WIP?node-id=23-14649&viewport=-4684%2C-983%2C0.38&t=eFklFHhsxKiuJoCo-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=23%3A14649&page-id=0%3A1&show-proto-sidebar=1" target="_blank" class="proto-state-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      New user prototype ↗
+    </a>
+    <a href="https://www.figma.com/proto/vpbiW66r3rOmjbnznwpsta/Bold.org-WIP?node-id=35-15700&viewport=-4684%2C-983%2C0.38&t=eFklFHhsxKiuJoCo-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=35%3A15700&page-id=0%3A1&show-proto-sidebar=1" target="_blank" class="proto-state-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Partially engaged prototype ↗
+    </a>
+    <a href="https://www.figma.com/proto/vpbiW66r3rOmjbnznwpsta/Bold.org-WIP?node-id=31-14922&viewport=-4684%2C-983%2C0.38&t=eFklFHhsxKiuJoCo-1&scaling=scale-down&content-scaling=fixed&starting-point-node-id=31%3A14922&page-id=0%3A1&show-proto-sidebar=1" target="_blank" class="proto-state-btn">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Returning user prototype ↗
+    </a>
+  </div>
+
+  <!-- BEFORE / AFTER SUMMARY -->
+  <div style="margin-top:40px">
+    <h3 style="font-size:17px;font-weight:700;color:var(--bold-dark);margin-bottom:16px">What Changed & Why</h3>
+    <div class="card-grid card-grid-2">
+      <div class="card sol-card">
+        <h3><span class="badge-green">HERO</span> Dollars, Not Points</h3>
+        <p style="font-size:13px;color:var(--muted)">"$2.00 earned toward your loans" replaces "267 BP earned." Students understand $2.00 intuitively — dollar framing makes rewards tangible from session one.</p>
+      </div>
+      <div class="card sol-card">
+        <h3><span class="badge-green">GOALS</span> Chunked Next Actions</h3>
+        <p style="font-size:13px;color:var(--muted)">3 weekly goals replace 329 scholarship listings. Each maps to a high-value action with a specific BP reward and a clear done state — reducing overwhelm and driving return visits.</p>
+      </div>
+      <div class="card sol-card">
+        <h3><span class="badge-green">ALERT</span> Scheduled Return Trigger</h3>
+        <p style="font-size:13px;color:var(--muted)">The banner tells users exactly when to come back and why — "the 500 BP scholarship opens tomorrow." Appointment-viewing behavior without requiring a push notification.</p>
+      </div>
+      <div class="card sol-card">
+        <h3><span class="badge-green">TRUST</span> Transparent Earning Model</h3>
+        <p style="font-size:13px;color:var(--muted)">"Vetted Partner Program" → "Partners pay to help fund your debt." A 3-step apply → earn → redeem model on every state makes the business model legible and builds trust.</p>
+      </div>
+      <div class="card sol-card">
+        <h3><span class="badge-green">MATCH</span> Best Match, Not All Matches</h3>
+        <p style="font-size:13px;color:var(--muted)">One curated scholarship card per state with win-probability signals, deadline urgency, and effort required. Returning users see in-progress applications surfaced first.</p>
+      </div>
+      <div class="card sol-card">
+        <h3><span class="badge-green">PROOF</span> Community Stats Anchor Trust</h3>
+        <p style="font-size:13px;color:var(--muted)">"$14,230 paid toward loans · 847 earned rewards · 23 winners this week" — three live-feeling stats that confirm real people are winning real money on the platform.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- RATIONALE -->
+<section id="rationale">
+<div class="slide">
+  <div class="section-eyebrow">03 — Behavioral Impact</div>
+  <div class="divider"></div>
+  <h2 class="section-title">Why These Changes Improve Behavior</h2>
+  <p class="section-desc">Each design decision maps to a specific psychological lever that reduces friction or builds confidence at the right moment in the user journey.</p>
+
+  <div class="behavior-row">
+    <div class="beh-item">
+      <div class="beh-icon blue">💵</div>
+      <div>
+        <div class="beh-title">Dollar Framing Collapses the Value Gap</div>
+        <div class="beh-desc">Switching from BP to dollars in the hero card eliminates the translation step new users must do to understand what they're earning. "$2.00 toward your loans" is immediately meaningful. "267 BP" is not. This single change reduces the cognitive load of understanding the platform at the moment of highest drop-off risk.</div>
+      </div>
+    </div>
+    <div class="beh-item">
+      <div class="beh-icon green">🎯</div>
+      <div>
+        <div class="beh-title">Weekly Goals Create a Return Ritual</div>
+        <div class="beh-desc">Users with a structured set of goals to complete have a reason to come back. The weekly reset mirrors familiar patterns from fitness apps and games — a fresh set of actions every Monday creates appointment behavior without requiring external triggers like email or push.</div>
+      </div>
+    </div>
+    <div class="beh-item">
+      <div class="beh-icon amber">⏰</div>
+      <div>
+        <div class="beh-title">The Alert Banner Pre-Schedules the Return Visit</div>
+        <div class="beh-desc">By naming a specific opportunity opening the next day, the banner turns a passive exit into an active commitment. Users who leave knowing "something opens tomorrow" are significantly more likely to return than users who leave with no pending reason to come back.</div>
+      </div>
+    </div>
+    <div class="beh-item">
+      <div class="beh-icon purple">🛡️</div>
+      <div>
+        <div class="beh-title">Transparent Model Converts Skeptics</div>
+        <div class="beh-desc">Gen Z carries structural skepticism about financial platforms. Making the revenue model explicit — "partners pay to help fund your debt" — transforms a source of distrust into a source of alignment. When students understand why Bold works the way it does, they engage with partner offers instead of avoiding them.</div>
+      </div>
+    </div>
+    <div class="beh-item">
+      <div class="beh-icon blue">📱</div>
+      <div>
+        <div class="beh-title">Mobile CTA Unlocks the Highest-Revenue Channel</div>
+        <div class="beh-desc">Mobile sessions generate 30–50% more revenue than web sessions, and push notifications are the most effective re-engagement channel available. A prominent download CTA on every dashboard state — framed as "earn more, faster" — directly converts web users to the higher-value surface.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- METRICS -->
+<section id="metrics">
+<div class="slide">
+  <div class="section-eyebrow">04 — Success Metrics</div>
+  <div class="divider"></div>
+  <h2 class="section-title">How to Evaluate Impact</h2>
+  <p class="section-desc">Primary metrics track engagement and revenue directly. Secondary signals tell us <em>why</em> the numbers moved — essential for fast, confident iteration.</p>
+
+  <div style="margin-bottom:32px">
+    <h3 style="font-size:15px;font-weight:700;color:var(--bold-dark);margin-bottom:16px">Primary Metrics</h3>
+    <div class="card-grid" style="grid-template-columns:repeat(auto-fit,minmax(200px,1fr))">
+      <div class="metric-card">
+        <div class="metric-num">D7</div>
+        <div class="metric-label">Return Rate</div>
+        <div class="metric-trend">↑ Target +15–25%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-num">1st</div>
+        <div class="metric-label">Application in Session 1</div>
+        <div class="metric-trend">↑ Target +20%</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-num">App</div>
+        <div class="metric-label">Mobile Installs from Web</div>
+        <div class="metric-trend">↑ Explicit CTA every state</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-num">BP→$</div>
+        <div class="metric-label">Points Redemption Rate</div>
+        <div class="metric-trend">↑ Dollar framing + milestones</div>
+      </div>
+    </div>
+  </div>
+
+  <div>
+    <h3 style="font-size:15px;font-weight:700;color:var(--bold-dark);margin-bottom:16px">Behavioral Signals</h3>
+    <div class="card-grid card-grid-2">
+      <div class="card">
+        <h4 style="font-size:14px;font-weight:700;margin-bottom:8px">📋 Weekly Goals Completion Rate</h4>
+        <p style="font-size:13px;color:var(--muted)">Best leading indicator of D30 retention. Users who complete at least 2 of 3 weekly goals are significantly more likely to return the following week. Instrument this first.</p>
+      </div>
+      <div class="card">
+        <h4 style="font-size:14px;font-weight:700;margin-bottom:8px">⏰ Alert Banner Attribution</h4>
+        <p style="font-size:13px;color:var(--muted)">Track D1 return rate for users who saw the "come back tomorrow" banner vs. those who didn't. If the delta is significant, expand banner content to include more forward-scheduled hooks.</p>
+      </div>
+      <div class="card">
+        <h4 style="font-size:14px;font-weight:700;margin-bottom:8px">💵 Hero Card Dollar Engagement</h4>
+        <p style="font-size:13px;color:var(--muted)">Click-through rate on the hero card progress bar and milestone CTA. High engagement signals the dollar framing is landing. Low engagement signals the milestone target needs to feel closer.</p>
+      </div>
+      <div class="card">
+        <h4 style="font-size:14px;font-weight:700;margin-bottom:8px">🤝 Partner Offer Completion Rate</h4>
+        <p style="font-size:13px;color:var(--muted)">Direct revenue signal. If the transparent earning model is working, partner offer completion should increase without any change to the offers themselves — purely from the framing shift.</p>
+      </div>
+    </div>
+  </div>
+</div>
+</section>
+
+<!-- EXPERIMENT -->
+<section id="experiment">
+<div class="slide">
+  <div class="section-eyebrow">05 — Experimentation Plan</div>
+  <div class="divider"></div>
+  <h2 class="section-title">A/B Test Roadmap</h2>
+  <p class="section-desc">Three prioritized experiments, ordered by expected impact and ease of implementation. Run sequentially to avoid contaminating signals.</p>
+
+  <div class="card" style="overflow-x:auto;margin-bottom:32px">
+    <table>
+      <thead>
+        <tr>
+          <th>Test</th>
+          <th>Control</th>
+          <th>Variant</th>
+          <th>Primary Signal</th>
+          <th>Priority</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><b>Hero Framing</b><br><span style="font-size:11px;color:var(--muted)">Dollar vs. BP in hero card</span></td>
+          <td>"267 BP earned"</td>
+          <td>"$2.00 earned toward your loans"</td>
+          <td>Partner offer completion rate</td>
+          <td><span class="pill pill-blue">High</span></td>
+        </tr>
+        <tr>
+          <td><b>Weekly Goals</b><br><span style="font-size:11px;color:var(--muted)">Structured actions vs. open browse</span></td>
+          <td>Current dashboard (no goals)</td>
+          <td>3 weekly goals with BP rewards + completion state</td>
+          <td>D7 return rate</td>
+          <td><span class="pill pill-blue">High</span></td>
+        </tr>
+        <tr>
+          <td><b>Alert Banner</b><br><span style="font-size:11px;color:var(--muted)">Return trigger</span></td>
+          <td>No banner</td>
+          <td>"Come back tomorrow — [X] scholarship opens"</td>
+          <td>D1 return rate</td>
+          <td><span class="pill pill-amber">Medium</span></td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="proto-banner">
+    <div class="proto-text">
+      <h3>Ready to Explore the Designs?</h3>
+      <p>All four states are available in the Figma prototype</p>
+    </div>
+    <a class="proto-btn" href="#" target="_blank">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
+      Open in Figma
+    </a>
+  </div>
+</div>
+</section>
+
+<div class="footer">
+  <b>Bold.org</b> &nbsp;·&nbsp; Student Dashboard Redesign &nbsp;·&nbsp; Mobile-First Case Study &nbsp;·&nbsp; April 2026
+</div>
+
+<script>
+  // Show images if src is populated
+  document.querySelectorAll('.phone-img-wrap img').forEach(img => {
+    if (img.getAttribute('src')) {
+      img.style.display = 'block';
+      if (img.nextElementSibling) img.nextElementSibling.style.display = 'none';
+    }
+  });
+</script>
+
+</body>
+</html>
